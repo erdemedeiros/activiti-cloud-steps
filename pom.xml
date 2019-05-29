@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2019 Alfresco, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.activiti.cloud.build</groupId>
+    <artifactId>activiti-cloud-parent</artifactId>
+    <version>7.1.7</version>
+    <relativePath/>
+  </parent>
+
+  <groupId>org.activiti.cloud.steps</groupId>
+  <artifactId>activiti-cloud-steps-parent</artifactId>
+  <version>7.1.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>Activiti Cloud Steps:: Steps Parent</name>
+  <url>http://activiti.org</url>
+
+  <properties>
+    <activiti-cloud-build.version>7.1.7</activiti-cloud-build.version>
+    <activiti-cloud-steps.version>${project.version}</activiti-cloud-steps.version>
+    <activiti-steps.version>7.1.0-SNAPSHOT</activiti-steps.version>
+    <activiti-cloud-dependencies.version>7.1.71</activiti-cloud-dependencies.version>
+  </properties>
+
+  <modules>
+    <module>activiti-cloud-steps-dependencies</module>
+    <module>activiti-cloud-steps-assertions</module>
+  </modules>
+  <repositories>
+    <repository>
+      <id>alfresco</id>
+      <name>Activiti Releases</name>
+      <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-releases/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+    </repository>
+  </repositories>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.activiti.cloud.build</groupId>
+        <artifactId>activiti-cloud-dependencies-parent</artifactId>
+        <version>${activiti-cloud-build.version}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <!-- Activiti build parent marker dependency for dependency convergence tests -->
+  <dependencies>
+    <dependency>
+      <groupId>org.activiti.cloud.build</groupId>
+      <artifactId>activiti-cloud-parent</artifactId>
+      <version>${activiti-cloud-build.version}</version>
+      <type>pom</type>
+    </dependency>
+    <dependency>
+      <groupId>org.activiti.steps</groupId>
+      <artifactId>activiti-steps-dependencies</artifactId>
+      <version>${activiti-steps.version}</version>
+      <type>pom</type>
+    </dependency>
+    <dependency>
+      <groupId>org.activiti.cloud.dependencies</groupId>
+      <artifactId>activiti-cloud-dependencies</artifactId>
+      <version>${activiti-cloud-dependencies.version}</version>
+      <type>pom</type>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <version>2.8.2</version>
+        <configuration>
+          <deployAtEnd>true</deployAtEnd>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
