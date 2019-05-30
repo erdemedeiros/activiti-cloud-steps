@@ -26,11 +26,11 @@ import org.activiti.steps.TaskProvider;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.PagedResources;
 
-public class CloudTaskProvider implements TaskProvider {
+public class RuntimeBundleTaskProvider implements TaskProvider {
 
     private TaskRuntimeClient taskRuntimeClient;
 
-    public CloudTaskProvider(TaskRuntimeClient taskRuntimeClient) {
+    public RuntimeBundleTaskProvider(TaskRuntimeClient taskRuntimeClient) {
         this.taskRuntimeClient = taskRuntimeClient;
     }
 
@@ -41,5 +41,16 @@ public class CloudTaskProvider implements TaskProvider {
                                                                      PageRequest.of(0,
                                                                                               1000));
         return new ArrayList<>(tasks.getContent());
+    }
+
+    @Override
+    public boolean canHandle(Task.TaskStatus taskStatus) {
+        switch (taskStatus) {
+            case CREATED:
+            case ASSIGNED:
+            case SUSPENDED:
+                return true;
+        }
+        return false;
     }
 }

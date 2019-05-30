@@ -16,27 +16,14 @@
 
 package org.activiti.cloud.client;
 
-import org.activiti.api.task.model.payloads.CompleteTaskPayload;
-import org.activiti.cloud.api.task.model.CloudTask;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.hateoas.MediaTypes;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@FeignClient(name = "TaskRuntimeClient",
-        url = "${activiti.rb.uri}",
+@FeignClient(name = "QueryTaskClient",
+        url = "${activiti.query.uri}",
         configuration = ActivitiFeignClientConfiguration.class)
 @RequestMapping(produces = {MediaTypes.HAL_JSON_VALUE})
-public interface TaskRuntimeClient extends TaskReadOnlyClient {
-
-    @PostMapping(value = TASKS_RELATIVE_PATH + "/{taskId}/claim")
-    CloudTask claimTask(@PathVariable("taskId") String taskId);
-
-    @PostMapping(value = TASKS_RELATIVE_PATH + "/{taskId}/complete")
-    CloudTask completeTask(@PathVariable("taskId") String taskId,
-                                     @RequestBody(required = false) CompleteTaskPayload completeTaskPayload);
-
+public interface QueryTaskClient extends TaskReadOnlyClient  {
 
 }

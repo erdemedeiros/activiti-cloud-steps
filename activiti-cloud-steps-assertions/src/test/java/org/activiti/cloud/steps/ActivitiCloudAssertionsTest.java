@@ -47,7 +47,7 @@ import static org.assertj.core.api.Assertions.*;
 public class ActivitiCloudAssertionsTest {
 
     private static final int MAX_ITEMS = 100;
-    private static final String USERNAME = "user1";
+    private static final String USERNAME = "hruser";
 
     @Autowired
     private ProcessOperations processOperations;
@@ -123,18 +123,19 @@ public class ActivitiCloudAssertionsTest {
                                 .hasBusinessKey("my-business-key"),
                         processInstance()
                                 .hasName("my-process-instance-name"))
+                .expect(processInstance()
+                                .hasTask("Task Group 1",
+                                         Task.TaskStatus.CREATED))
                 .andReturn();
 
-//        await().untilAsserted(() -> {
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
+                                                         MAX_ITEMS),
+                                             TaskPayloadBuilder
+                                                     .tasks()
+                                                     .withProcessInstanceId(processInstance.getId())
+                                                     .build());
 
-            Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
-                                                             MAX_ITEMS),
-                                                 TaskPayloadBuilder
-                                                         .tasks()
-                                                         .withProcessInstanceId(processInstance.getId())
-                                                         .build());
-
-            assertThat(tasks.getContent()).hasSize(1);
+        assertThat(tasks.getContent()).hasSize(1);
 
         Task task = tasks.getContent().get(0);
         taskOperations.claim(TaskPayloadBuilder
@@ -154,7 +155,13 @@ public class ActivitiCloudAssertionsTest {
                 .expect(
                         TaskMatchers.task().hasBeenCompleted(),
                         task("Task Group 2").hasBeenCreated()
-                );
-//        });
+                )
+                .expect(processInstance()
+                                .hasTask("Task Group 1",
+                                                  Task.TaskStatus.COMPLETED),
+                        processInstance()
+                                .hasTask("Task Group 2",
+                                         Task.TaskStatus.CREATED))
+        ;
     }
 }

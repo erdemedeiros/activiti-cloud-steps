@@ -59,7 +59,7 @@ public class ClientDelegateTaskRuntime implements TaskRuntime {
 
     @Override
     public Task task(String taskId) {
-        return null;
+        return taskRuntimeClient.getTaskById(taskId);
     }
 
     @Override

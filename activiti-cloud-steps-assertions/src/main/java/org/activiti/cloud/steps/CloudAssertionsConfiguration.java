@@ -22,9 +22,11 @@ import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.cloud.client.EventsClient;
 import org.activiti.cloud.client.ProcessRuntimeClient;
+import org.activiti.cloud.client.QueryTaskClient;
 import org.activiti.cloud.client.TaskRuntimeClient;
 import org.activiti.cloud.steps.operations.CloudEventProvider;
-import org.activiti.cloud.steps.operations.CloudTaskProvider;
+import org.activiti.cloud.steps.operations.QueryTaskProvider;
+import org.activiti.cloud.steps.operations.RuntimeBundleTaskProvider;
 import org.activiti.steps.EventProvider;
 import org.activiti.steps.TaskProvider;
 import org.activiti.steps.operations.ProcessOperations;
@@ -59,14 +61,21 @@ public class CloudAssertionsConfiguration {
 
     @Bean
     public TaskOperations taskOperations(TaskRuntime taskRuntime,
-                                         EventProvider eventProvider) {
+                                         EventProvider eventProvider,
+                                         List<TaskProvider> taskProviders) {
         return new TaskOperations(taskRuntime,
-                                  eventProvider);
+                                  eventProvider,
+                                  taskProviders);
     }
 
     @Bean
-    public TaskProvider taskProvider(TaskRuntimeClient taskRuntimeClient){
-        return new CloudTaskProvider(taskRuntimeClient);
+    public TaskProvider runtimeBundleTaskProvider(TaskRuntimeClient taskRuntimeClient){
+        return new RuntimeBundleTaskProvider(taskRuntimeClient);
+    }
+
+    @Bean
+    public TaskProvider queryTaskProvider(QueryTaskClient queryTaskClient){
+        return new QueryTaskProvider(queryTaskClient);
     }
 
     @Bean
@@ -84,11 +93,5 @@ public class CloudAssertionsConfiguration {
         return new ClientDelegateProcessRuntime(runtimeClient);
     }
 
-
-
-//    @Bean
-//    public RestTemplate  template(){
-//        return new RestTemplate();
-//    }
 
 }
