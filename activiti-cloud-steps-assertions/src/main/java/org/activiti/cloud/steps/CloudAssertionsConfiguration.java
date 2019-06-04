@@ -16,10 +16,6 @@
 
 package org.activiti.cloud.steps;
 
-import java.util.List;
-
-import org.activiti.api.process.runtime.ProcessRuntime;
-import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.cloud.client.EventsClient;
 import org.activiti.cloud.client.ProcessRuntimeClient;
 import org.activiti.cloud.client.QueryTaskClient;
@@ -29,40 +25,11 @@ import org.activiti.cloud.steps.operations.QueryTaskProvider;
 import org.activiti.cloud.steps.operations.RuntimeBundleTaskProvider;
 import org.activiti.steps.EventProvider;
 import org.activiti.steps.TaskProvider;
-import org.activiti.steps.operations.ProcessOperations;
-import org.activiti.steps.operations.ProcessOperationsImpl;
-import org.activiti.steps.operations.TaskOperations;
-import org.activiti.steps.operations.TaskOperationsImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class CloudAssertionsConfiguration {
-
-    @Bean
-    public ProcessOperations processOperations(ProcessRuntime processRuntime,
-                                                    EventProvider eventProvider){
-        return new ProcessOperationsImpl(processRuntime, eventProvider, null);
-    }
-
-
-    @Bean
-    public ProcessOperations processOperations(ProcessRuntime processRuntime,
-                                               EventProvider eventProvider,
-                                               List<TaskProvider> taskProviders) {
-        return new ProcessOperationsImpl(processRuntime,
-                                         eventProvider,
-                                         taskProviders);
-    }
-
-    @Bean
-    public TaskOperations taskOperations(TaskRuntime taskRuntime,
-                                         EventProvider eventProvider,
-                                         List<TaskProvider> taskProviders) {
-        return new TaskOperationsImpl(taskRuntime,
-                                      eventProvider,
-                                      taskProviders);
-    }
 
     @Bean
     public TaskProvider runtimeBundleTaskProvider(TaskRuntimeClient taskRuntimeClient){
