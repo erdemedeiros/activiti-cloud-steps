@@ -32,6 +32,7 @@ import org.activiti.steps.TaskProvider;
 import org.activiti.steps.operations.ProcessOperations;
 import org.activiti.steps.operations.ProcessOperationsImpl;
 import org.activiti.steps.operations.TaskOperations;
+import org.activiti.steps.operations.TaskOperationsImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -44,11 +45,6 @@ public class CloudAssertionsConfiguration {
         return new ProcessOperationsImpl(processRuntime, eventProvider, null);
     }
 
-
-//    @Bean
-//    public RequestInterceptor requestInterceptor(){
-//        return new OAuth2FeignRequestInterceptor();
-//    }
 
     @Bean
     public ProcessOperations processOperations(ProcessRuntime processRuntime,
@@ -63,9 +59,9 @@ public class CloudAssertionsConfiguration {
     public TaskOperations taskOperations(TaskRuntime taskRuntime,
                                          EventProvider eventProvider,
                                          List<TaskProvider> taskProviders) {
-        return new TaskOperations(taskRuntime,
-                                  eventProvider,
-                                  taskProviders);
+        return new TaskOperationsImpl(taskRuntime,
+                                      eventProvider,
+                                      taskProviders);
     }
 
     @Bean

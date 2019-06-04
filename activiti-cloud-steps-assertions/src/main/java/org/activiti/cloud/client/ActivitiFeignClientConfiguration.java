@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.Logger;
@@ -38,9 +37,7 @@ import org.springframework.cloud.openfeign.support.SpringEncoder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.hateoas.Link;
 import org.springframework.hateoas.hal.Jackson2HalModule;
-import org.springframework.hateoas.hal.ResourcesMixin;
 import org.springframework.security.oauth2.client.DefaultOAuth2ClientContext;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.client.token.DefaultAccessTokenRequest;
@@ -49,33 +46,11 @@ import org.springframework.security.oauth2.common.OAuth2AccessToken;
 public class ActivitiFeignClientConfiguration {
 
     /**
-     * Configures Hal Media link Id attribute deserialization  
-     */
-    public abstract class IdResourcesSupportMixin extends ResourcesMixin {
-
-        @Override
-        @JsonIgnore(false)
-        public abstract Link getId();
-    }    
-
-    /**
-     * Configures Hal Media entity Id attribute deserialization  
-     */
-    public abstract class IdSupportMixin {
-
-        @JsonIgnore(false)
-        public abstract String getId();
-    }
-
-
-    /**
      * Configures Feign Decoder to support Activiti Hal Media Format 
      */
     @Bean
     public Decoder feignDecoder(ObjectMapper mapper) {
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-//              .addMixIn(ResourceSupport.class, IdResourcesSupportMixin.class)
-//              .addMixIn(Resource.class, IdSupportMixin.class)
               .registerModule(new Jackson2HalModule());
 
         return new ResponseEntityDecoder(new JacksonDecoder(mapper));
