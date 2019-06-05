@@ -16,13 +16,17 @@
 
 package org.activiti.cloud.steps;
 
+import java.util.List;
+
 import org.activiti.cloud.client.EventsClient;
 import org.activiti.cloud.client.ProcessRuntimeClient;
 import org.activiti.cloud.client.QueryTaskClient;
 import org.activiti.cloud.client.TaskRuntimeClient;
 import org.activiti.cloud.steps.operations.CloudEventProvider;
+import org.activiti.cloud.steps.operations.ProcessRuntimeClientOperations;
 import org.activiti.cloud.steps.operations.QueryTaskProvider;
 import org.activiti.cloud.steps.operations.RuntimeBundleTaskProvider;
+import org.activiti.cloud.steps.operations.TaskRuntimeClientOperations;
 import org.activiti.steps.EventProvider;
 import org.activiti.steps.TaskProvider;
 import org.springframework.context.annotation.Bean;
@@ -42,18 +46,22 @@ public class CloudAssertionsConfiguration {
     }
 
     @Bean
-    public ClientDelegateTaskRuntime clientDelegateTaskRuntime(TaskRuntimeClient taskRuntimeClient){
-        return new ClientDelegateTaskRuntime(taskRuntimeClient);
+    public ProcessRuntimeClientOperations processRuntimeClientOperations(ProcessRuntimeClient processRuntimeClient,
+                                                                         EventProvider eventProvider,
+                                                                         List<TaskProvider> taskProviders){
+        return new ProcessRuntimeClientOperations(processRuntimeClient, eventProvider, taskProviders);
+    }
+
+    @Bean
+    public TaskRuntimeClientOperations taskRuntimeClientOperations(TaskRuntimeClient taskRuntimeClient,
+                                                                   EventProvider eventProvider,
+                                                                   List<TaskProvider> taskProviders) {
+        return new TaskRuntimeClientOperations(taskRuntimeClient, eventProvider, taskProviders);
     }
 
     @Bean
     public EventProvider cloudEventProvider(EventsClient eventsClient){
         return new CloudEventProvider(eventsClient);
-    }
-
-    @Bean
-    public ClientDelegateProcessRuntime clientDelegateProcessRuntime(ProcessRuntimeClient runtimeClient) {
-        return new ClientDelegateProcessRuntime(runtimeClient);
     }
 
 

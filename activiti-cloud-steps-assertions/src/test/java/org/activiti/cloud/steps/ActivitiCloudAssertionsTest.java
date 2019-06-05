@@ -18,12 +18,11 @@ package org.activiti.cloud.steps;
 
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
-import org.activiti.api.runtime.shared.query.Page;
-import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
-import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.cloud.CloudAssertionsTestApplication;
+import org.activiti.cloud.api.task.model.CloudTask;
+import org.activiti.cloud.client.TaskRuntimeClient;
 import org.activiti.steps.matchers.TaskMatchers;
 import org.activiti.steps.operations.ProcessOperations;
 import org.activiti.steps.operations.TaskOperations;
@@ -31,6 +30,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.hateoas.PagedResources;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.activiti.steps.matchers.BPMNStartEventMatchers.startEvent;
@@ -56,7 +57,7 @@ public class ActivitiCloudAssertionsTest {
     private TaskOperations taskOperations;
 
     @Autowired
-    private TaskRuntime taskRuntime;
+    private TaskRuntimeClient taskRuntimeClient;
 
     @Test
     public void shouldExecuteGenericProcess() {
@@ -128,16 +129,12 @@ public class ActivitiCloudAssertionsTest {
                                          Task.TaskStatus.CREATED))
                 .andReturn();
 
-        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
-                                                         MAX_ITEMS),
-                                             TaskPayloadBuilder
-                                                     .tasks()
-                                                     .withProcessInstanceId(processInstance.getId())
-                                                     .build());
+        PagedResources<CloudTask> taskPagedResources = taskRuntimeClient.getTasks(processInstance.getId(), PageRequest.of(0,
+                                                                                                             MAX_ITEMS));
 
-        assertThat(tasks.getContent()).hasSize(1);
+        assertThat(taskPagedResources.getContent()).hasSize(1);
 
-        Task task = tasks.getContent().get(0);
+        Task task = taskPagedResources.getContent().iterator().next();
         taskOperations.claim(TaskPayloadBuilder
                                      .claim()
                                      .withTaskId(
